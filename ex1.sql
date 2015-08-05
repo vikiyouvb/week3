@@ -1,0 +1,49 @@
+
+CREATE DATABASE IF NOT EXISTS service_station;
+
+USE service_station;
+
+CREATE TABLE service_station
+(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(50) NOT NULL,
+	address VARCHAR(100) NOT NULL,
+	contact CHAR(10) NOT NULL
+);
+
+CREATE TABLE employees
+(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(50) NOT NULL,
+	age TINYINT NOT NULL,
+	contact CHAR(10) NOT NULL
+);
+
+CREATE TABLE customers
+(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(50) NOT NULL,
+	age TINYINT NOT NULL,
+	contact CHAR(10) NOT NULL,
+	emp_id INT NOT NULL
+);
+
+CREATE TABLE vehicles
+(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	type VARCHAR(4) NOT NULL,
+	brand VARCHAR(30) NOT NULL,
+	color VARCHAR(30) NOT NULL,
+	service_charge DEC(5,2) NOT NULL
+);
+
+CREATE TABLE invoices
+(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name_of_owner VARCHAR(50) NOT NULL,
+	vehicle VARCHAR(4) NOT NULL,
+	amount_total DEC(5,2) NOT NULL,
+	employee_assigned VARCHAR(50) NOT NULL
+);
+
+DROP DATABASE service_station;
