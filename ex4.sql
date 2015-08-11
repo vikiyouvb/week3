@@ -16,3 +16,32 @@ SELECT students.name AS name,marks.year AS year FROM marks INNER JOIN students O
  
 SELECT students.name,medals.game_id,medals.medal_won,medals.year,medals.grade FROM students INNER JOIN medals ON students.id=medals.student_id WHERE students.id IN (SELECT medals.student_id FROM medals GROUP BY medals.student_id HAVING COUNT(medals.id)>3);
 
+SELECT students.name,COUNT(medals.id) AS medals,temp.quarterly_per,temp.half_yearly_per,temp.annual_per,temp.year,temp.grade FROM 
+(SELECT marks.student_id AS student_id,COALESCE(ROUND(SUM(marks.quarterly)/5,2),0) AS quarterly_per,COALESCE(ROUND(SUM(marks.half_yearly)/5,2),0) AS half_yearly_per,COALESCE(ROUND(SUM(marks.annual)/5,2),0) AS annual_per,marks.year AS year,marks.grade AS grade FROM marks GROUP BY marks.student_id,marks.year)
+ AS temp LEFT OUTER JOIN medals ON temp.student_id=medals.student_id AND temp.year=medals.year INNER JOIN students ON students.id=temp.student_id GROUP BY temp.student_id,temp.year;
+
+ DELIMITER $
+ CREATE FUNCTION getRating(total INT) RETURNS CHAR(1)
+ BEGIN
+ DECLARE res CHAR(1);
+ IF total BETWEEN 450 AND 500 THEN
+ SET res='S';
+ ELSEIF total BETWEEN 400 AND 449 THEN
+ SET res='A';
+ ELSEIF total BETWEEN 350 AND 399 THEN
+ SET res='B';
+ ELSEIF total BETWEEN 300 AND 349 THEN
+ SET res='C';
+ ELSEIF total BETWEEN 250 AND 299 THEN
+ SET res='D';
+ ELSEIF total BETWEEN 200 AND 249 THEN
+ SET res='E';
+ ELSE
+ SET res='F';
+ END IF;
+ RETURN res;
+ END$
+ DELIMITER ;
+
+SELECT students.name,getRating(temp.quarterly_total) AS quarterly_rating,getRating(temp.half_yearly_total) AS half_yearly_rating,getRating(temp.annual_total) AS annual_rating,temp.year,temp.grade
+FROM (SELECT marks.student_id AS student_id,COALESCE(SUM(marks.quarterly),0) AS quarterly_total,COALESCE(SUM(marks.half_yearly),0) AS half_yearly_total,COALESCE(SUM(marks.annual),0) AS annual_total,marks.year AS year,marks.grade AS grade FROM marks GROUP BY marks.student_id,marks.year) AS temp INNER JOIN students ON students.id=temp.student_id; 
