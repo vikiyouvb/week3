@@ -46,4 +46,10 @@ CREATE TABLE invoices
 	employee_assigned VARCHAR(50) NOT NULL
 );
 
-DROP DATABASE service_station;
+#DROP TABLE service_station;
+#DROP TABLE employees;
+#DROP TABLE customers;
+#DROP TABLE vehicles;
+#DROP TABLE invoices;
+
+#DROP DATABASE service_station;
